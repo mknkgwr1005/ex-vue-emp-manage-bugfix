@@ -3,6 +3,9 @@
     <div class="row register-page">
       <form class="col s12" id="reg-form">
         <div class="row">
+          <div class="errorMsg">
+            {{ errorLastName }}
+          </div>
           <div class="input-field col s6">
             <input
               id="last_name"
@@ -12,6 +15,9 @@
               required
             />
             <label for="last_name">姓</label>
+          </div>
+          <div class="errorMsg">
+            {{ errorFirstName }}
           </div>
           <div class="input-field col s6">
             <input
@@ -25,6 +31,9 @@
           </div>
         </div>
         <div class="row">
+          <div class="errorMsg">
+            {{ errorMailAddress }}
+          </div>
           <div class="input-field col s12">
             <input
               id="email"
@@ -37,6 +46,9 @@
           </div>
         </div>
         <div class="row">
+          <div class="errorMsg">
+            {{ errorPassword }}
+          </div>
           <div class="input-field col s12">
             <input
               id="password"
@@ -88,6 +100,13 @@ export default class RegisterAdmin extends Vue {
   //登録エラー
   private displayMsg = "";
 
+  // エラー
+  private errorLastName = "";
+  private errorFirstName = "";
+  private errorMailAddress = "";
+  private errorPassword = "";
+  private errorFlag = false;
+
   /**
    * 管理者情報を登録する.
    *
@@ -96,25 +115,53 @@ export default class RegisterAdmin extends Vue {
    * @returns Promiseオブジェクト
    */
   async registerAdmin(): Promise<void> {
-    // 管理者登録処理
-    const response = await axios.post(`${config.EMP_WEBAPI_URL}/insert`, {
-      name: this.lastName + " " + this.firstName,
-      mailAddress: this.mailAddress,
-      password: this.password,
-    });
-    console.dir("response:" + JSON.stringify(response));
-    // エラーチェック処理
-    const errorCheck = JSON.stringify(response);
-    if (errorCheck.includes("error")) {
-      this.displayMsg = "登録できませんでした";
-      return;
+
+    // エラー表示
+    if (this.lastName === "") {
+      this.errorLastName = "姓を入力してください";
+      this.errorFlag = true;
     }
-    this.$router.push("/loginAdmin");
+    if (this.firstName === "") {
+      this.errorFirstName = "名を入力してください";
+      this.errorFlag = true;
+    }
+    if (this.mailAddress === "") {
+      this.errorMailAddress = "メールアドレスを入力してください";
+      this.errorFlag = true;
+    }
+    if (this.errorPassword === "") {
+      this.errorPassword = "パスワードを入力してください";
+      this.errorFlag = true;
+    }
+
+    if (this.errorFlag === false) {
+      // 管理者登録処理
+      const response = await axios.post(`${config.EMP_WEBAPI_URL}/insert`, {
+        name: this.lastName + " " + this.firstName,
+        mailAddress: this.mailAddress,
+        password: this.password,
+      });
+      console.dir("response:" + JSON.stringify(response));
+
+      // エラーチェック処理
+      const errorCheck = JSON.stringify(response);
+      if (errorCheck.includes("error")) {
+        this.displayMsg = "登録できませんでした";
+        return;
+      }
+      
+      this.$router.push("/loginAdmin");
+    }
+
   }
 }
 </script>
 
 <style scoped>
+.errorMsg {
+  font-weight: bold;
+  color: red;
+}
 .register-page {
   width: 600px;
 }
