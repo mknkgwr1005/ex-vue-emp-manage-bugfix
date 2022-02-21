@@ -26,6 +26,9 @@
             </div>
           </div>
           <div class="row">
+            <div class="error">
+              {{ loginError }}
+            </div>
             <div class="input-field col s12">
               <button
                 class="btn btn-register waves-effect waves-light col s12"
@@ -65,6 +68,8 @@ export default class LoginAdmin extends Vue {
   private mailAddress = "";
   // パスワード
   private password = "";
+  // エラー
+  private loginError = "";
 
   /**
    * ログインする.
@@ -79,14 +84,26 @@ export default class LoginAdmin extends Vue {
       password: this.password,
     });
     console.dir("response:" + JSON.stringify(response));
+    // エラーチェック処理
+    const errorCheck = JSON.stringify(response);
+    if (errorCheck.includes("error")) {
+      console.log(errorCheck);
+
+      this.loginError = "ログインに失敗しました。";
+      return;
+    }
 
     // 従業員一覧に遷移する
-    this.$router.push("/employeeList");
+    else this.$router.push("/employeeList");
   }
 }
 </script>
 
 <style scoped>
+.error {
+  font-weight: bold;
+  color: red;
+}
 .login-page {
   width: 600px;
 }
