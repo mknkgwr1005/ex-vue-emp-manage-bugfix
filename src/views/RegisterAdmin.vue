@@ -62,6 +62,7 @@
           </div>
         </div>
         <div class="row">
+          {{ displayMsg }}
           <div class="input-field col s6">
             <button
               class="btn btn-large btn-register waves-effect waves-light"
@@ -96,6 +97,8 @@ export default class RegisterAdmin extends Vue {
   private mailAddress = "";
   // パスワード
   private password = "";
+  //登録エラー
+  private displayMsg = "";
 
   // エラー
   private errorLastName = "";
@@ -112,6 +115,7 @@ export default class RegisterAdmin extends Vue {
    * @returns Promiseオブジェクト
    */
   async registerAdmin(): Promise<void> {
+
     // エラー表示
     if (this.lastName === "") {
       this.errorLastName = "姓を入力してください";
@@ -139,8 +143,16 @@ export default class RegisterAdmin extends Vue {
       });
       console.dir("response:" + JSON.stringify(response));
 
+      // エラーチェック処理
+      const errorCheck = JSON.stringify(response);
+      if (errorCheck.includes("error")) {
+        this.displayMsg = "登録できませんでした";
+        return;
+      }
+      
       this.$router.push("/loginAdmin");
     }
+
   }
 }
 </script>
