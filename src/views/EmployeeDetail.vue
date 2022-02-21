@@ -40,7 +40,7 @@
             </tr>
             <tr>
               <th nowrap>入社日</th>
-              <td><span v-html="currentEmployee.hireDate"></span></td>
+              <td><span v-html="currentEmployee.formatDate"></span></td>
             </tr>
             <tr>
               <th nowrap>メールアドレス</th>
