@@ -62,7 +62,7 @@
             </tr>
             <tr>
               <th nowrap>給料</th>
-              <td><span v-html="formattedSalary"></span>円</td>
+              <td><span v-html="currentEmployee.formatSalary"></span>円</td>
             </tr>
             <tr>
               <th nowrap>特性</th>
@@ -135,8 +135,6 @@ export default class EmployeeDetail extends Vue {
   private currentEmployeeImage = "";
   // 扶養人数
   private currentDependentsCount = 0;
-  // フォーマットされた給与額
-  private formattedSalary = "";
 
   /**
    * VuexストアのGetter経由で受け取ったリクエストパラメータのIDから１件の従業員情報を取得する.
@@ -158,8 +156,6 @@ export default class EmployeeDetail extends Vue {
 
     // 今取得した従業員情報から扶養人数を取り出し、currentDependentsCount属性に代入する
     this.currentDependentsCount = this.currentEmployee.dependentsCount;
-    // 取得した従業員情報の給与を、フォーマットする
-    this.formattedSalary = Number(this.currentEmployee.salary).toLocaleString();
   }
 
   /**
