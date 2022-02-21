@@ -60,6 +60,20 @@
             />
             <label for="password">パスワード</label>
           </div>
+          <div class="errorMsg">
+            {{ passCheckErr }}
+          </div>
+          <div class="input-field col s12">
+            <input
+              id="checkpassword"
+              type="password"
+              class="validate"
+              minlength="8"
+              v-model="checkpassword"
+              required
+            />
+            <label for="checkpassword">確認用パスワード</label>
+          </div>
         </div>
         <div class="row">
           {{ displayMsg }}
@@ -97,6 +111,9 @@ export default class RegisterAdmin extends Vue {
   private mailAddress = "";
   // パスワード
   private password = "";
+  private checkpassword = "";
+  // エラー
+  private passCheckErr = "";
   //登録エラー
   private displayMsg = "";
 
@@ -115,7 +132,11 @@ export default class RegisterAdmin extends Vue {
    * @returns Promiseオブジェクト
    */
   async registerAdmin(): Promise<void> {
-
+    // パスワードチェック
+    if (this.password !== this.checkpassword) {
+      this.passCheckErr = "パスワードがまちがっています。";
+      return;
+    }
     // エラー表示
     if (this.lastName === "") {
       this.errorLastName = "姓を入力してください";
@@ -149,10 +170,9 @@ export default class RegisterAdmin extends Vue {
         this.displayMsg = "登録できませんでした";
         return;
       }
-      
+
       this.$router.push("/loginAdmin");
     }
-
   }
 }
 </script>

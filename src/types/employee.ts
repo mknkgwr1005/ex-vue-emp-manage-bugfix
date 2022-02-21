@@ -32,6 +32,14 @@ export class Employee {
     private _dependentsCount: number
   ) {}
 
+  /**
+   * 従業員の給与額をフォーマットします．
+   */
+  get formatSalary(): string {
+    const formatNum = Number(this.salary).toLocaleString();
+    return formatNum;
+  }
+
   public get id(): number {
     return this._id;
   }
