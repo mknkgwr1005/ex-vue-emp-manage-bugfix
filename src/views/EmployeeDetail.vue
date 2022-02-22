@@ -39,7 +39,7 @@
             </tr>
             <tr>
               <th nowrap>入社日</th>
-              <td><span v-text="currentFormatDate"></span></td>
+              <td><span v-text="currentEmployee.formatDate"></span></td>
             </tr>
             <tr>
               <th nowrap>メールアドレス</th>
@@ -67,7 +67,7 @@
             </tr>
             <tr>
               <th nowrap>給料</th>
-              <td><span v-text="currentFormatSalary"></span>円</td>
+              <td><span v-text="currentEmployee.formatSalary"></span>円</td>
             </tr>
             <tr>
               <th nowrap>特性</th>
@@ -111,7 +111,6 @@ import { Component, Vue } from "vue-property-decorator";
 import config from "@/const/const";
 import { Employee } from "@/types/employee";
 import axios from "axios";
-import { format } from "date-fns";
 
 /**
  * 従業員詳細を表示する画面.
@@ -141,11 +140,6 @@ export default class EmployeeDetail extends Vue {
   private currentEmployeeImage = "";
   // 扶養人数
   private currentDependentsCount = 0;
-  // フォーマットされた入社日
-  private currentFormatDate = "";
-  // フォーマットされた給与額
-  private currentFormatSalary = "";
-
   /**
    * 従業員詳細をWebAPIから取得する.
    *
@@ -161,24 +155,26 @@ export default class EmployeeDetail extends Vue {
       `http://153.127.48.168:8080/ex-emp-api/employee/${employeeId}`
     );
     console.dir("respone:" + JSON.stringify(response));
-    this.currentEmployee = response.data.employee;
+    this.currentEmployee = new Employee(
+      response.data.employee.id,
+      response.data.employee.name,
+      response.data.employee.image,
+      response.data.employee.gender,
+      response.data.employee.hireDate,
+      response.data.employee.mailAddress,
+      response.data.employee.zipCode,
+      response.data.employee.address,
+      response.data.employee.telephone,
+      response.data.employee.salary,
+      response.data.employee.characteristics,
+      response.data.employee.dependentsCount
+    );
 
     // 今取得した従業員情報から画像パスを取り出し、imgディレクトリの名前を前に付与(文字列連結)してcurrentEmployeeImage属性に代入する
     this.currentEmployeeImage = `${config.EMP_WEBAPI_URL}/img/${this.currentEmployee.image}`;
 
     // 今取得した従業員情報から扶養人数を取り出し、currentDependentsCount属性に代入する
     this.currentDependentsCount = this.currentEmployee.dependentsCount;
-
-    // 入社日のフォーマット
-    this.currentFormatDate = format(
-      new Date(this.currentEmployee.hireDate),
-      "yyyy年MM月dd日"
-    );
-
-    // 給与額のフォーマット
-    this.currentFormatSalary = Number(
-      this.currentEmployee.salary
-    ).toLocaleString();
   }
 
   /**
