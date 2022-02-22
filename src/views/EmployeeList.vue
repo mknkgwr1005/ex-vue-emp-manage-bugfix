@@ -1,5 +1,11 @@
 <template>
   <div class="container">
+    <div>
+      <input type="text" v-model="name" />
+      <button type="button" @click="searchForText">
+        検索
+      </button>
+    </div>
     <!-- パンくずリスト -->
     <nav>
       <div class="nav-wrapper">
@@ -20,7 +26,9 @@
             <th>扶養人数</th>
           </tr>
         </thead>
-
+        {{
+          errorMessage
+        }}
         <tbody>
           <tr v-for="employee of currentEmployeeList" v-bind:key="employee.id">
             <td>
@@ -49,6 +57,10 @@ export default class EmployeeList extends Vue {
   private currentEmployeeList: Array<Employee> = [];
   // 従業員数
   private employeeCount = 0;
+  // 検索欄
+  private name = "";
+  //
+  private errorMessage = "";
 
   /**
    * Vuexストアのアクション経由で非同期でWebAPIから従業員一覧を取得する.
@@ -75,6 +87,21 @@ export default class EmployeeList extends Vue {
    */
   get getEmployeeCount(): number {
     return this.currentEmployeeList.length;
+  }
+
+  /**
+   * 検索欄に入力された従業員一覧を表示する.
+   */
+  searchForText(): void {
+    this.errorMessage = "";
+    this.currentEmployeeList = this.$store.getters.getSearchEmployeeByName(
+      this.name
+    );
+    if (this.currentEmployeeList.length <= 0) {
+      this.errorMessage =
+        "検索結果が1件もありませんでしたので、全件表示します。";
+      this.currentEmployeeList = this.$store.getters.getAllEmployees;
+    }
   }
 }
 </script>
