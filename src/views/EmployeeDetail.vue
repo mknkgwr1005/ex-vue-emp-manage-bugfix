@@ -4,13 +4,12 @@
     <nav>
       <div class="nav-wrapper">
         <div class="col s12 teal">
-          <a class="breadcrumb"
-            ><router-link :to="'/employeeList/'">従業員リスト</router-link></a
+          <router-link :to="'/employeeList/'" class="breadcrumb"
+            >従業員リスト</router-link
           >
-          <a class="breadcrumb"
-            ><router-link :to="'/employeeDetail/:id/'"
-              >従業員詳細</router-link
-            ></a
+          <router-link :to="'/employeeDetail/:id/'" class="breadcrumb"
+            >従業員詳細</router-link
+          >
           >
         </div>
       </div>
