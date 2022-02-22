@@ -111,6 +111,7 @@ import { Component, Vue } from "vue-property-decorator";
 import config from "@/const/const";
 import { Employee } from "@/types/employee";
 import axios from "axios";
+import { format } from "date-fns";
 
 /**
  * 従業員詳細を表示する画面.
@@ -160,7 +161,7 @@ export default class EmployeeDetail extends Vue {
       response.data.employee.name,
       response.data.employee.image,
       response.data.employee.gender,
-      response.data.employee.hireDate,
+      new Date(response.data.employee.hireDate),
       response.data.employee.mailAddress,
       response.data.employee.zipCode,
       response.data.employee.address,
