@@ -111,7 +111,6 @@ import { Component, Vue } from "vue-property-decorator";
 import config from "@/const/const";
 import { Employee } from "@/types/employee";
 import axios from "axios";
-import { format } from "date-fns";
 
 /**
  * 従業員詳細を表示する画面.
