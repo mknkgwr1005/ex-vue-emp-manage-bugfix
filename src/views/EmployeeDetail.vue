@@ -34,7 +34,6 @@
             </tr>
             <tr>
               <th nowrap>入社日</th>
-              <!-- <td><span v-text="currentEmployee.formatDate"></span></td> -->
               <td><span v-text="currentFormatDate"></span></td>
             </tr>
             <tr>
@@ -63,7 +62,6 @@
             </tr>
             <tr>
               <th nowrap>給料</th>
-              <!-- <td><span v-text="currentEmployee.formatSalary"></span>円</td> -->
               <td><span v-text="currentFormatSalary"></span>円</td>
             </tr>
             <tr>
