@@ -32,6 +32,39 @@
         </div>
         <div class="row">
           <div class="errorMsg">
+            {{ errorZipcode }}
+          </div>
+          <div class="input-field col s6">
+            <input
+              id="zipcode"
+              type="text"
+              class="validate"
+              v-model="zipcode"
+              required
+            />
+            <br />
+            <label for="zipcode">郵便番号</label>
+          </div>
+          <button type="button" @click="showAddress">検索</button>
+        </div>
+
+        <div class="row">
+          <div class="errorMsg">
+            {{ errorAddress }}
+          </div>
+          <div class="input-field col s12">
+            <input
+              id="address"
+              type="text"
+              class="validate"
+              v-model="address"
+              required
+            />
+            <label for="address">住所</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="errorMsg">
             {{ errorMailAddress }}
           </div>
           <div class="input-field col s12">
@@ -97,7 +130,6 @@
 import { Component, Vue } from "vue-property-decorator";
 import config from "@/const/const";
 import axios from "axios";
-
 /**
  * 管理者登録をする画面.
  */
@@ -107,6 +139,10 @@ export default class RegisterAdmin extends Vue {
   private lastName = "";
   // 名
   private firstName = "";
+  // 郵便番号
+  private zipcode = "";
+  // 住所
+  private address = "";
   // メールアドレス
   private mailAddress = "";
   // パスワード
@@ -120,6 +156,8 @@ export default class RegisterAdmin extends Vue {
   // エラー
   private errorLastName = "";
   private errorFirstName = "";
+  private errorZipcode = "";
+  private errorAddress = "";
   private errorMailAddress = "";
   private errorPassword = "";
   private errorFlag = false;
@@ -150,8 +188,20 @@ export default class RegisterAdmin extends Vue {
       this.errorMailAddress = "メールアドレスを入力してください";
       this.errorFlag = true;
     }
-    if (this.errorPassword === "") {
+    if (this.password === "") {
       this.errorPassword = "パスワードを入力してください";
+      this.errorFlag = true;
+    }
+    if (this.checkpassword === "") {
+      this.passCheckErr = "パスワードを入力してください";
+      this.errorFlag = true;
+    }
+    if (this.zipcode === "") {
+      this.errorZipcode = "郵便番号を入力してください";
+      this.errorFlag = true;
+    }
+    if (this.errorAddress === "") {
+      this.errorAddress = "住所を入力してください";
       this.errorFlag = true;
     }
     // 処理の中断
@@ -175,6 +225,25 @@ export default class RegisterAdmin extends Vue {
     }
 
     this.$router.push("/loginAdmin");
+  }
+
+  async showAddress(): Promise<void> {
+    // エラーを消す
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const axiosJsonpAdapter = require("axios-jsonp");
+
+    console.log(this.zipcode);
+    const response = await axios.get(`https://zipcoda.net/api`, {
+      adapter: axiosJsonpAdapter,
+      params: {
+        zipcode: this.zipcode,
+      },
+    });
+
+    console.dir("response" + JSON.stringify(response));
+    console.log(response);
+
+    this.address = response.data.items[0].address;
   }
 }
 </script>
