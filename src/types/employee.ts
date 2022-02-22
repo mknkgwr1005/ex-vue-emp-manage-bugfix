@@ -45,8 +45,7 @@ export class Employee {
    */
 
   get formatDate(): string {
-    const formatDate = format(new Date(this.hireDate), "yyyy年MM月dd日");
-    return formatDate;
+    return format(this.hireDate, "yyyy年MM月dd日");
   }
 
   public get id(): number {

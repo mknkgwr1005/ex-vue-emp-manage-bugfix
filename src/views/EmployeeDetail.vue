@@ -140,21 +140,35 @@ export default class EmployeeDetail extends Vue {
   private currentEmployeeImage = "";
   // 扶養人数
   private currentDependentsCount = 0;
-
   /**
-   * VuexストアのGetter経由で受け取ったリクエストパラメータのIDから１件の従業員情報を取得する.
+   * 従業員詳細をWebAPIから取得する.
    *
-   * @remarks
-   * Vueインスタンスが生成されたタイミングで
-   * Vuexストア内のGetterを呼ぶ。
-   * ライフサイクルフックのcreatedイベント利用
+   * @returns - Promiseオブジェクト
+   *
+   * @remarks リロードするとページが消えることの対策として作成されたWebAPIから
+   * 渡されたIDの従業員詳細を表示させる
    */
-  created(): void {
+  async created(): Promise<void> {
     // 送られてきたリクエストパラメータのidをnumberに変換して取得する
     const employeeId = parseInt(this.$route.params.id);
-
-    // VuexストアのGetter、getEmployeeById()メソッドに先ほど取得したIDを渡し、１件の従業員情報を取得し、戻り値をcurrentEmployee属性に代入する
-    this.currentEmployee = this.$store.getters.getEmployeeById(employeeId);
+    const response = await axios.get(
+      `http://153.127.48.168:8080/ex-emp-api/employee/${employeeId}`
+    );
+    console.dir("respone:" + JSON.stringify(response));
+    this.currentEmployee = new Employee(
+      response.data.employee.id,
+      response.data.employee.name,
+      response.data.employee.image,
+      response.data.employee.gender,
+      new Date(response.data.employee.hireDate),
+      response.data.employee.mailAddress,
+      response.data.employee.zipCode,
+      response.data.employee.address,
+      response.data.employee.telephone,
+      response.data.employee.salary,
+      response.data.employee.characteristics,
+      response.data.employee.dependentsCount
+    );
 
     // 今取得した従業員情報から画像パスを取り出し、imgディレクトリの名前を前に付与(文字列連結)してcurrentEmployeeImage属性に代入する
     this.currentEmployeeImage = `${config.EMP_WEBAPI_URL}/img/${this.currentEmployee.image}`;
