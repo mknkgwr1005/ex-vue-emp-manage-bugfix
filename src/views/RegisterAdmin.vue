@@ -135,7 +135,7 @@ export default class RegisterAdmin extends Vue {
     // パスワードチェック
     if (this.password !== this.checkpassword) {
       this.passCheckErr = "パスワードがまちがっています。";
-      return;
+      this.errorFlag = true;
     }
     // エラー表示
     if (this.lastName === "") {
@@ -154,25 +154,27 @@ export default class RegisterAdmin extends Vue {
       this.errorPassword = "パスワードを入力してください";
       this.errorFlag = true;
     }
-
-    if (this.errorFlag === false) {
-      // 管理者登録処理
-      const response = await axios.post(`${config.EMP_WEBAPI_URL}/insert`, {
-        name: this.lastName + " " + this.firstName,
-        mailAddress: this.mailAddress,
-        password: this.password,
-      });
-      console.dir("response:" + JSON.stringify(response));
-
-      // エラーチェック処理
-      const errorCheck = JSON.stringify(response);
-      if (errorCheck.includes("error")) {
-        this.displayMsg = "登録できませんでした";
-        return;
-      }
-
-      this.$router.push("/loginAdmin");
+    // 処理の中断
+    if (this.errorFlag === true) {
+      return;
     }
+
+    // 管理者登録処理
+    const response = await axios.post(`${config.EMP_WEBAPI_URL}/insert`, {
+      name: this.lastName + " " + this.firstName,
+      mailAddress: this.mailAddress,
+      password: this.password,
+    });
+    console.dir("response:" + JSON.stringify(response));
+
+    // エラーチェック処理
+    const errorCheck = JSON.stringify(response);
+    if (errorCheck.includes("error")) {
+      this.displayMsg = "登録できませんでした";
+      return;
+    }
+
+    this.$router.push("/loginAdmin");
   }
 }
 </script>
